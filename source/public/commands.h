@@ -3,11 +3,12 @@
 #include <memory>
 
 class Node;
-using node_ptr = std::shared_ptr<Node>;
 
 class ICommand
 {
 public:
+	using node_ptr = std::weak_ptr<Node>;
+
 	virtual void execute() = 0;
 	virtual ~ICommand() = default;
 };

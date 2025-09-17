@@ -2,8 +2,9 @@
 #include <memory>
 
 class Node;
+struct SNodeParameters;
 
 class NodeFabric
 {
-	static std::shared_ptr<Node> create_random_node();
+	static std::shared_ptr<Node> create_node(size_t id);
 };

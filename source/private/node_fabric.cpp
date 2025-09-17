@@ -1,7 +1,8 @@
 #include "node_fabric.h"
 #include "node.h"
 
-std::shared_ptr<Node> NodeFabric::create_random_node()
+std::shared_ptr<Node> NodeFabric::create_node(size_t id)
 {
-	return std::shared_ptr<Node>();
+	SNodeParameters parameters(id);
+	return std::make_shared<Node>(parameters);
 }

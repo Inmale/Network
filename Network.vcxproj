@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\public\commands.h" />
+    <ClInclude Include="source\public\command_fabric.h" />
+    <ClInclude Include="source\public\handler_fabric.h" />
     <ClInclude Include="source\public\network.h" />
     <ClInclude Include="source\public\node.h" />
     <ClInclude Include="source\public\node_fabric.h" />
@@ -28,6 +30,8 @@
   <ItemGroup>
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\private\commands.cpp" />
+    <ClCompile Include="source\private\command_fabric.cpp" />
+    <ClCompile Include="source\private\handler_fabric.cpp" />
     <ClCompile Include="source\private\network.cpp" />
     <ClCompile Include="source\private\node.cpp" />
     <ClCompile Include="source\private\node_fabric.cpp" />

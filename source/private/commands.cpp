@@ -3,20 +3,20 @@
 
 void CreateValueCommand::execute()
 {
-	if (m_sender)
-		m_sender->handle(m_value);
+	if (!m_sender.expired())
+		m_sender.lock()->handle(m_value);
 }
 
 void SubscribeCommand::execute()
 {
-	if (m_sender && m_subscription)
-		m_subscription->subscribe(m_sender);
+	if (!m_sender.expired() && !m_subscription.expired())
+		m_subscription.lock()->subscribe(m_sender);
 }
 
 void UnsubscribeCommand::execute()
 {
-	if (m_sender && m_subscription)
-		m_subscription->unsubscribe(m_sender);
+	if (!m_sender.expired() && !m_subscription.expired())
+		m_subscription.lock()->unsubscribe(m_sender);
 }
 
 void CreateAndSubcribeCommand::execute()
@@ -26,7 +26,7 @@ void CreateAndSubcribeCommand::execute()
 	SubscribeCommand::execute();
 }
 
-node_ptr CreateAndSubcribeCommand::create_subscription()
+typename CreateAndSubcribeCommand::node_ptr CreateAndSubcribeCommand::create_subscription()
 {
 	//TODO:Create new node
 	return node_ptr();
