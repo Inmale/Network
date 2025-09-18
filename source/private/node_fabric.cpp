@@ -3,6 +3,5 @@
 
 std::shared_ptr<Node> NodeFabric::create_node(size_t id)
 {
-	SNodeParameters parameters(id);
-	return std::make_shared<Node>(parameters);
+	return std::make_shared<Node>(id);
 }

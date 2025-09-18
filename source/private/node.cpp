@@ -1,5 +1,6 @@
 #include "node.h"
 #include "handler_fabric.h"
+#include "random_generator.h"
 
 Node::Node(const SNodeParameters& parameters)
 	: m_id(parameters.m_id) {}
@@ -18,22 +19,42 @@ void Node::execute_handler(size_t subscription_id, int value)
 		handler_it->second->handle(value);
 }
 
-void Node::subscribe(node_w_ptr subscriber)
+void Node::sub_from_random_node()
 {
-	if (!subscriber.expired() && (subscriber.lock()->get_id() != m_id))
-		if (m_subscribers.insert({ subscriber.lock()->get_id(), subscriber}).second)
+	std::uniform_int_distribution<int> int_dist(0, (int)(m_subscribers.size() - 1));
+	auto value{ int_dist(RandomGenerator::get_rn_generator()) };
+	auto it{ m_subscribers.begin() };
+	if (it != m_subscribers.end())
+		subscribe((*it).second);
+}
+
+void Node::subscribe(node_weak_ptr subscription)
+{
+	if (!subscription.expired())
+		if (subscription.lock()->m_subscribers.insert({ get_id(), shared_from_this() }).second)
 		{
-			subscriber.lock()->m_subscriptions.insert({m_id, shared_from_this()});
-			subscriber.lock()->m_handlers.insert({m_id, HandlerFabric::create_random_handler(shared_from_this(), subscriber.lock()->get_id())});
+			m_subscriptions.insert({ subscription.lock()->get_id(), subscription });
+			m_handlers.insert({ subscription.lock()->get_id(), HandlerFabric::create_random_handler(subscription, get_id())});
 		}
 }
 
-void Node::unsubscribe(node_w_ptr subscriber)
+void Node::unsub_from_random_node()
 {
-	if (!subscriber.expired())
+	std::uniform_int_distribution<int> int_dist(0, (int)(m_subscriptions.size() - 1));
+	auto value{ int_dist(RandomGenerator::get_rn_generator()) };
+	auto it{ m_subscriptions.begin() };
+	std::advance(it, value);
+	if(it != m_subscriptions.end())
+		unsubscription((*it).second);
+}
+
+void Node::unsubscription(node_weak_ptr subscription)
+{
+	if (!subscription.expired())
 	{
-		m_subscribers.erase(subscriber.lock()->get_id());
-		subscriber.lock()->m_subscriptions.erase(m_id);
+		m_subscriptions.erase(subscription.lock()->get_id());
+		subscription.lock()->m_subscribers.erase(get_id());
+		m_handlers.erase(subscription.lock()->get_id());
 	}
 }
 

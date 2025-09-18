@@ -26,6 +26,7 @@
     <ClInclude Include="source\public\node.h" />
     <ClInclude Include="source\public\node_fabric.h" />
     <ClInclude Include="source\public\node_handlers.h" />
+    <ClInclude Include="source\public\random_generator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp" />
@@ -36,6 +37,7 @@
     <ClCompile Include="source\private\node.cpp" />
     <ClCompile Include="source\private\node_fabric.cpp" />
     <ClCompile Include="source\private\node_handlers.cpp" />
+    <ClCompile Include="source\private\random_generator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

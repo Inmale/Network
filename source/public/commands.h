@@ -2,39 +2,40 @@
 #include <vector>
 #include <memory>
 
+constexpr int g_max_gen_value{ 50 };
+
 class Node;
+using node_weak_ptr = std::weak_ptr<Node>;
 
 class ICommand
 {
 public:
-	using node_ptr = std::weak_ptr<Node>;
+	using command_ptr = std::shared_ptr<ICommand>;
+	using command_weak_ptr = std::weak_ptr<ICommand>;
 
 	virtual void execute() = 0;
 	virtual ~ICommand() = default;
 };
 
-class CreateValueCommand : public ICommand
+class GenerateValueCommand : public ICommand
 {
-	node_ptr m_sender;
-	int m_value{ 0 };
+	node_weak_ptr m_sender;
 public:
-	CreateValueCommand(node_ptr sender, int value) : m_sender(sender), m_value(value) {}
+	GenerateValueCommand(node_weak_ptr sender) : m_sender(sender) {}
 
 	virtual void execute() override;
-	inline int get_value() const { return m_value; }
-
-	virtual ~CreateValueCommand() {}
+private:
+	int generate_value();
+public:
+	virtual ~GenerateValueCommand() {}
 };
 
 class SubscribeCommand : public ICommand
 {
-	node_ptr m_sender;
-	node_ptr m_subscription;
+protected:
+	node_weak_ptr m_sender;
 public:
-	SubscribeCommand(node_ptr sender, node_ptr subscription) : m_sender(sender), m_subscription(subscription) {}
-	SubscribeCommand(node_ptr sender) : m_sender(sender) {}
-
-	inline void set_subscription(node_ptr subscription) { m_subscription = subscription; }
+	SubscribeCommand(node_weak_ptr sender) : m_sender(sender) {}
 	virtual void execute() override;
 
 	virtual ~SubscribeCommand() {}
@@ -42,10 +43,9 @@ public:
 
 class UnsubscribeCommand : public ICommand
 {
-	node_ptr m_sender;
-	node_ptr m_subscription;
+	node_weak_ptr m_sender;
 public:
-	UnsubscribeCommand(node_ptr sender, node_ptr subscription) : m_sender(sender), m_subscription(subscription) {}
+	UnsubscribeCommand(node_weak_ptr sender) : m_sender(sender) {}
 
 	virtual void execute() override;
 	virtual ~UnsubscribeCommand() {}
@@ -54,9 +54,10 @@ public:
 class CreateAndSubcribeCommand : public SubscribeCommand
 {
 public:
-	CreateAndSubcribeCommand(node_ptr sender) : SubscribeCommand(sender) {}
+	CreateAndSubcribeCommand(node_weak_ptr sender) : SubscribeCommand(sender) {}
 
 	virtual void execute() override;
+	virtual ~CreateAndSubcribeCommand() {}
 private:
-	node_ptr create_subscription();
+	node_weak_ptr create_subscription();
 };
