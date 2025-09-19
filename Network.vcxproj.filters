@@ -21,9 +21,6 @@
     <ClInclude Include="source\public\node.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="source\public\node_fabric.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="source\public\commands.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -48,9 +45,6 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="source\private\node.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="source\private\node_fabric.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="source\private\commands.cpp">

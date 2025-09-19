@@ -1,9 +1,12 @@
 #include "node.h"
 #include "handler_fabric.h"
 #include "random_generator.h"
+#include "command_fabric.h"
 
-Node::Node(const SNodeParameters& parameters)
-	: m_id(parameters.m_id) {}
+command_ptr Node::create_random_command()
+{
+	return CommandFabric::create_random_command(weak_from_this());
+}
 
 void Node::handle(int value)
 {
@@ -21,17 +24,20 @@ void Node::execute_handler(size_t subscription_id, int value)
 
 void Node::sub_from_random_node()
 {
-	std::uniform_int_distribution<int> int_dist(0, (int)(m_subscribers.size() - 1));
-	auto value{ int_dist(RandomGenerator::get_rn_generator()) };
-	auto it{ m_subscribers.begin() };
-	if (it != m_subscribers.end())
-		subscribe((*it).second);
+	if (!m_subscribers.empty())
+	{
+		std::uniform_int_distribution<int> int_dist(0, (int)(m_subscribers.size() - 1));
+		auto value{ int_dist(RandomGenerator::get_rn_generator()) };
+		auto it{ m_subscribers.begin() };
+		if (it != m_subscribers.end())
+			subscribe((*it).second);
+	}
 }
 
 void Node::subscribe(node_weak_ptr subscription)
 {
 	if (!subscription.expired())
-		if (subscription.lock()->m_subscribers.insert({ get_id(), shared_from_this() }).second)
+		if (subscription.lock()->m_subscribers.insert({ get_id(), weak_from_this()}).second)
 		{
 			m_subscriptions.insert({ subscription.lock()->get_id(), subscription });
 			m_handlers.insert({ subscription.lock()->get_id(), HandlerFabric::create_random_handler(subscription, get_id())});
@@ -40,12 +46,15 @@ void Node::subscribe(node_weak_ptr subscription)
 
 void Node::unsub_from_random_node()
 {
-	std::uniform_int_distribution<int> int_dist(0, (int)(m_subscriptions.size() - 1));
-	auto value{ int_dist(RandomGenerator::get_rn_generator()) };
-	auto it{ m_subscriptions.begin() };
-	std::advance(it, value);
-	if(it != m_subscriptions.end())
-		unsubscription((*it).second);
+	if (!m_subscriptions.empty())
+	{
+		std::uniform_int_distribution<int> int_dist(0, (int)(m_subscriptions.size() - 1));
+		auto value{ int_dist(RandomGenerator::get_rn_generator()) };
+		auto it{ m_subscriptions.begin() };
+		std::advance(it, value);
+		if (it != m_subscriptions.end())
+			unsubscription((*it).second);
+	}
 }
 
 void Node::unsubscription(node_weak_ptr subscription)

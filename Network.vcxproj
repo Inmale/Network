@@ -24,7 +24,6 @@
     <ClInclude Include="source\public\handler_fabric.h" />
     <ClInclude Include="source\public\network.h" />
     <ClInclude Include="source\public\node.h" />
-    <ClInclude Include="source\public\node_fabric.h" />
     <ClInclude Include="source\public\node_handlers.h" />
     <ClInclude Include="source\public\random_generator.h" />
   </ItemGroup>
@@ -35,7 +34,6 @@
     <ClCompile Include="source\private\handler_fabric.cpp" />
     <ClCompile Include="source\private\network.cpp" />
     <ClCompile Include="source\private\node.cpp" />
-    <ClCompile Include="source\private\node_fabric.cpp" />
     <ClCompile Include="source\private\node_handlers.cpp" />
     <ClCompile Include="source\private\random_generator.cpp" />
   </ItemGroup>

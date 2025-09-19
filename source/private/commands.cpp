@@ -35,7 +35,7 @@ void CreateAndSubcribeCommand::execute()
 
 node_weak_ptr CreateAndSubcribeCommand::create_subscription()
 {
-	auto new_node{ Network::create_node() };
+	auto new_node{ Network::create_node_from_command() };
 	if (!new_node.expired())
 		return new_node;
 	return node_weak_ptr();
